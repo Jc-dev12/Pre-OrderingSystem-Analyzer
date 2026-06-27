@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Food Preference Counter</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',Arial,sans-serif;
+    background:#ffffff;
+    color:#333;
+}
+
+/* ===== HEADER ===== */
+
+.header{
+    background:#0A2F6B;
+    color:white;
+    padding:20px 40px;
+    border-bottom:5px solid #C62828;
+}
+
+.header h1{
+    font-size:28px;
+    font-weight:600;
+}
+
+.header p{
+    opacity:.9;
+    margin-top:5px;
+}
+
+/* ===== CONTENT ===== */
+
+.container{
+    width:95%;
+    max-width:1500px;
+    margin:30px auto;
+}
+
+/* ===== CARDS ===== */
+
+.box{
+    background:white;
+    border:1px solid #e4e4e4;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:25px;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.box h3{
+    color:#0A2F6B;
+    margin-bottom:18px;
+    font-size:20px;
+    border-left:5px solid #F9B000;
+    padding-left:10px;
+}
+
+/* ===== INPUTS ===== */
+
+input[type=text],
+input[type=file]{
+
+    width:100%;
+    padding:12px 15px;
+    border:1px solid #cfcfcf;
+    border-radius:8px;
+    font-size:15px;
+    transition:.3s;
+
+}
+
+input:focus{
+
+    outline:none;
+    border-color:#0A2F6B;
+    box-shadow:0 0 6px rgba(10,47,107,.15);
+
+}
+
+/* ===== TABLE ===== */
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+th{
+
+    background:#0A2F6B;
+    color:white;
+
+}
+
+th,td{
+
+    padding:12px;
+    border:1px solid #ddd;
+
+}
+
+tr:nth-child(even){
+
+    background:#fafafa;
+
+}
+
+tr:hover{
+
+    background:#f3f7ff;
+
+}
+
+/* ===== BUTTON ===== */
+
+button{
+
+    background:#C62828;
+    color:white;
+    border:none;
+    padding:12px 24px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.25s;
+
+}
+
+button:hover{
+
+    background:#a71d1d;
+
+}
+
+/* ===== PACKAGE CARD ===== */
+
+.package-card{
+
+    border-left:6px solid #C62828;
+    background:white;
+    border-radius:8px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+
+}
+
+.package-card.unique{
+
+    border-left:6px solid #0A2F6B;
+
+}
+
+.package-title{
+
+    color:#0A2F6B;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:12px;
+
+}
+
+.label{
+
+    color:#C62828;
+    font-weight:bold;
+
+}
+
+details{
+
+    margin-top:12px;
+
+}
+
+summary{
+
+    cursor:pointer;
+    color:#0A2F6B;
+    font-weight:bold;
+
+}
+
+hr{
+
+    border:none;
+    border-top:2px solid #eee;
+    margin:30px 0;
+
+}
+
+</style>
+
+</head>
+<body>
+    <div class="header">
+    <h1>Beneficiary Food Package Counter</h1>
+    <p>Food Preference Summary and Package Generator</p>
+</div>
+
+<div class="container">
+    <div class="box">
+    <h3>Search Beneficiary</h3>
+
+    <input
+        type="text"
+        id="searchName"
+        placeholder="Type beneficiary name..."
+        onkeyup="searchBeneficiary()"
+        style="
+            width:100%;
+            padding:10px;
+            font-size:16px;
+            margin-bottom:15px;
+        "
+    >
+
+    <div id="searchResult"></div>
+</div>
+
+<h2>Beneficiary Food Counter</h2>
+
+<input type="file" id="fileInput">
+
+<div class="box">
+    <h3>GO Foods Summary</h3>
+    <div id="goSummary"></div>
+</div>
+
+<div class="box">
+    <h3>GROW Foods Summary</h3>
+    <div id="growSummary"></div>
+</div>
+
+<div class="box">
+    <h3>GLOW Foods Summary</h3>
+    <div id="glowSummary"></div>
+</div>
+
+<div class="box">
+    <div id="duplicateSummary"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<script>
+    let beneficiaryPackages = [];
+
+    let reportData = {
+    goCount:{},
+    growCount:{},
+    glowCount:{},
+    comboCount:{},
+    comboNames:{}
+};
+
+document.getElementById('fileInput').addEventListener('change', loadDocx);
+
+async function loadDocx(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const arrayBuffer = await file.arrayBuffer();
+
+    mammoth.convertToHtml({
+        arrayBuffer: arrayBuffer
+    })
+    .then(result => {
+
+        const html = result.value;
+
+        parseTables(html);
+
+    })
+    .catch(err => {
+
+        console.error(err);
+        alert("Unable to read DOCX file");
+
+    });
+
+}
+
+function parseTables(html){
+
+    const parser = new DOMParser();
+
+    const doc = parser.parseFromString(html,"text/html");
+
+    const tables = doc.querySelectorAll("table");
+
+    let goCount = {};
+    let growCount = {};
+    let glowCount = {};
+
+    let comboCount = {};
+    let comboNames = {};
+
+    tables.forEach(table => {
+
+        let municipality = "";
+
+    const tableText = clean(table.textContent).toUpperCase();
+
+    if(tableText.includes("ARTECHE")){
+        municipality = "Arteche";
+    }
+    else if(tableText.includes("SAN POLICARPO")){
+        municipality = "San Policarpo";
+    }
+
+    const rows = table.querySelectorAll("tr");
+
+    rows.forEach((row,index)=>{
+
+        const cells = row.querySelectorAll("td,th");
+
+        if(cells.length < 4) return;
+
+        const col1 = clean(cells[0].textContent);
+        const col2 = clean(cells[1].textContent);
+        const col3 = clean(cells[2].textContent);
+        const col4 = clean(cells[3].textContent);
+
+        if(
+            col1.toUpperCase()=="NAME" ||
+            col2.toUpperCase()=="GO"
+        ){
+            return;
+        }
+
+        const name = municipality
+            ? `${col1} (${municipality})`
+            : col1;
+
+        const go = col2;
+        const grow = col3;
+        const glow = col4;
+
+        if(!name) return;
+
+        goCount[go] = (goCount[go] || 0) + 1;
+        growCount[grow] = (growCount[grow] || 0) + 1;
+        glowCount[glow] = (glowCount[glow] || 0) + 1;
+
+        const combo = go+"||"+grow+"||"+glow;
+
+        comboCount[combo] = (comboCount[combo] || 0) + 1;
+
+        if(!comboNames[combo]){
+            comboNames[combo] = [];
+        }
+
+        comboNames[combo].push(name);
+
+    });
+
+});
+
+    display(goCount,"goSummary");
+    display(growCount,"growSummary");
+    display(glowCount,"glowSummary");
+
+    displayDuplicates(comboCount,comboNames);
+
+}
+
+function clean(txt){
+
+    return txt
+        .replace(/\s+/g," ")
+        .trim();
+
+}
+
+function display(obj,id){
+
+    let html = `
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Count</th>
+        </tr>
+    `;
+
+    Object.entries(obj)
+        .sort((a,b)=>b[1]-a[1])
+        .forEach(([item,count])=>{
+
+            html += `
+            <tr>
+                <td>${item}</td>
+                <td>${count}</td>
+            </tr>
+            `;
+
+        });
+
+    html += "</table>";
+
+    document.getElementById(id).innerHTML = html;
+
+}
+
+function displayDuplicates(comboCount, comboNames){
+
+    let html = "";
+
+    // DUPLICATE ORDERS
+    html += "<h3>Duplicate Orders</h3>";
+
+    let packageIndex = 0;
+
+Object.entries(comboCount)
+    .sort((a,b)=>b[1]-a[1])
+    .forEach(([combo,count])=>{
+
+        if(count < 2) return;
+
+        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
+        const parts = combo.split("||");
+
+comboNames[combo].forEach(name=>{
+
+    beneficiaryPackages.push({
+        name:name,
+        package:packageName,
+        go:parts[0],
+        grow:parts[1],
+        glow:parts[2],
+        type:"Duplicate"
+    });
+
+});
+
+packageIndex++;
+
+        html += `
+        <div class="package-card">
+            <h4 class="package-title">
+            📦${packageName} (${count} Beneficiaries)
+        </h4>
+
+            <span class="label">GO:</span> ${parts[0]}<br>
+            <span class="label">GROW:</span> ${parts[1]}<br>
+            <span class="label">GLOW:</span> ${parts[2]}<br><br>
+
+            <details>
+                <summary>View Names</summary>
+                ${comboNames[combo].join("<br>")}
+            </details>
+
+        </div>
+        `;
+
+    });
+
+    
+    // UNIQUE ORDERS
+    html += `
+    <hr style="margin:30px 0;">
+    <h3>Beneficiaries Without Duplicate Orders</h3>
+    `;
+
+    Object.entries(comboCount)
+    .sort((a,b)=>a[1]-b[1])
+    .forEach(([combo,count])=>{
+
+        if(count !== 1) return;
+
+        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
+const parts = combo.split("||");
+
+beneficiaryPackages.push({
+
+    name:comboNames[combo][0],
+    package:packageName,
+    go:parts[0],
+    grow:parts[1],
+    glow:parts[2],
+    type:"Unique"
+
+});
+
+packageIndex++;
+
+        html += `
+        <div class="package-card unique">
+
+            <h4>📦${packageName} (${count} Beneficiar${count > 1 ? 'ies' : 'y'})</h4>
+
+            <b>GO:</b> ${parts[0]}<br>
+            <b>GROW:</b> ${parts[1]}<br>
+            <b>GLOW:</b> ${parts[2]}<br><br>
+
+            <b>Name:</b><br>
+            ${comboNames[combo][0]}
+        </div>
+        `;
+
+    });
+
+    document.getElementById("duplicateSummary").innerHTML = html;
+
+}
+
+function searchBeneficiary(){
+
+    const keyword = document
+        .getElementById("searchName")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const result = document.getElementById("searchResult");
+
+    if(keyword==""){
+
+        result.innerHTML="";
+        return;
+
+    }
+
+    const matches = beneficiaryPackages.filter(x=>
+        x.name.toLowerCase().includes(keyword)
+    );
+
+    if(matches.length==0){
+
+        result.innerHTML="<b>No beneficiary found.</b>";
+        return;
+
+    }
+
+    let html="";
+
+    matches.forEach(item=>{
+
+        html += `
+        <div style="
+            border:1px solid #2196F3;
+            padding:12px;
+            margin-bottom:10px;
+            background:#eef7ff;
+        ">
+
+            <h3>${item.package}</h3>
+
+            <b>Name:</b> ${item.name}<br><br>
+
+            <b>GO:</b> ${item.go}<br>
+            <b>GROW:</b> ${item.grow}<br>
+            <b>GLOW:</b> ${item.glow}<br><br>
+
+            <b>Type:</b> ${item.type}
+
+        </div>
+        `;
+
+    });
+
+    result.innerHTML=html;
+
+}
+
+</script>
+ </div>
+</body>
+</html>
