@@ -1,392 +1,475 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Food Preference Counter</title>
+    <title>Food Preference Counter</title>
 
-<style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #ffffff;
+            color: #333;
+        }
 
-body{
-    font-family:'Segoe UI',Arial,sans-serif;
-    background:#ffffff;
-    color:#333;
-}
+        /* ===== HEADER ===== */
 
-/* ===== HEADER ===== */
+        .header {
+            background: #0A2F6B;
+            color: white;
+            padding: 20px 40px;
+            border-bottom: 5px solid #C62828;
+        }
 
-.header{
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: .9;
+            margin-top: 5px;
+        }
+
+        /* ===== CONTENT ===== */
+
+        .container {
+            width: 95%;
+            max-width: 1500px;
+            margin: 30px auto;
+        }
+
+        /* ===== CARDS ===== */
+
+        .box {
+            background: white;
+            border: 1px solid #e4e4e4;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .06);
+        }
+
+        .box h3 {
+            color: #0A2F6B;
+            margin-bottom: 18px;
+            font-size: 20px;
+            border-left: 5px solid #F9B000;
+            padding-left: 10px;
+        }
+
+        /* ===== INPUTS ===== */
+
+        input[type=text],
+        input[type=file] {
+
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cfcfcf;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: .3s;
+
+        }
+
+        input:focus {
+
+            outline: none;
+            border-color: #0A2F6B;
+            box-shadow: 0 0 6px rgba(10, 47, 107, .15);
+
+        }
+
+        /* ===== TABLE ===== */
+
+        table {
+
+            width: 100%;
+            border-collapse: collapse;
+
+        }
+
+        th {
+
+            background: #0A2F6B;
+            color: white;
+
+        }
+
+        th,
+        td {
+
+            padding: 12px;
+            border: 1px solid #ddd;
+
+        }
+
+        tr:nth-child(even) {
+
+            background: #fafafa;
+
+        }
+
+        tr:hover {
+
+            background: #f3f7ff;
+
+        }
+
+        /* ===== BUTTON ===== */
+
+        button {
+
+            background: #C62828;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: .25s;
+
+        }
+
+        button:hover {
+
+            background: #a71d1d;
+
+        }
+
+        /* ===== PACKAGE CARD ===== */
+
+        .package-card {
+
+            border-left: 6px solid #C62828;
+            background: white;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+
+        }
+
+        .package-card.unique {
+
+            border-left: 6px solid #0A2F6B;
+
+        }
+
+        .package-title {
+
+            color: #0A2F6B;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+
+        }
+
+        .label {
+
+            color: #C62828;
+            font-weight: bold;
+
+        }
+
+        details {
+
+            margin-top: 12px;
+
+        }
+
+        summary {
+
+            cursor: pointer;
+            color: #0A2F6B;
+            font-weight: bold;
+
+        }
+
+        hr {
+
+            border: none;
+            border-top: 2px solid #eee;
+            margin: 30px 0;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="header">
+        <h1>Beneficiary Food Package Counter</h1>
+        <p>Food Preference Summary and Package Generator</p>
+    </div>
+
+    <div class="container">
+        <div class="box">
+            <h3>Search Beneficiary</h3>
+
+            <input type="text" id="searchName" placeholder="Type beneficiary name..." onkeyup="searchBeneficiary()"
+                style="
+            width:100%;
+            padding:10px;
+            font-size:16px;
+            margin-bottom:15px;
+        ">
+
+            <div id="searchResult"></div>
+        </div>
+
+        <h2>Beneficiary Food Counter</h2>
+
+        <input type="file" id="fileInput">
+        <button onclick="resetSession()" style="
+    margin-top:10px;
+    margin-bottom:10px;
     background:#0A2F6B;
-    color:white;
-    padding:20px 40px;
-    border-bottom:5px solid #C62828;
-}
-
-.header h1{
-    font-size:28px;
-    font-weight:600;
-}
-
-.header p{
-    opacity:.9;
-    margin-top:5px;
-}
-
-/* ===== CONTENT ===== */
-
-.container{
-    width:95%;
-    max-width:1500px;
-    margin:30px auto;
-}
-
-/* ===== CARDS ===== */
-
-.box{
-    background:white;
-    border:1px solid #e4e4e4;
-    border-radius:10px;
-    padding:20px;
-    margin-bottom:25px;
-    box-shadow:0 3px 12px rgba(0,0,0,.06);
-}
-
-.box h3{
-    color:#0A2F6B;
-    margin-bottom:18px;
-    font-size:20px;
-    border-left:5px solid #F9B000;
-    padding-left:10px;
-}
-
-/* ===== INPUTS ===== */
-
-input[type=text],
-input[type=file]{
-
-    width:100%;
-    padding:12px 15px;
-    border:1px solid #cfcfcf;
-    border-radius:8px;
-    font-size:15px;
-    transition:.3s;
-
-}
-
-input:focus{
-
-    outline:none;
-    border-color:#0A2F6B;
-    box-shadow:0 0 6px rgba(10,47,107,.15);
-
-}
-
-/* ===== TABLE ===== */
-
-table{
-
-    width:100%;
-    border-collapse:collapse;
-
-}
-
-th{
-
-    background:#0A2F6B;
-    color:white;
-
-}
-
-th,td{
-
-    padding:12px;
-    border:1px solid #ddd;
-
-}
-
-tr:nth-child(even){
-
-    background:#fafafa;
-
-}
-
-tr:hover{
-
-    background:#f3f7ff;
-
-}
-
-/* ===== BUTTON ===== */
-
-button{
-
-    background:#C62828;
     color:white;
     border:none;
     padding:12px 24px;
     border-radius:7px;
     cursor:pointer;
     font-size:15px;
-    transition:.25s;
+">
+            🗑️ Reset Session
+        </button>
+        
+        <div class="box">
+            <h3>GO Foods Summary</h3>
+            <div id="goSummary"></div>
+        </div>
 
-}
+        <div class="box">
+            <h3>GROW Foods Summary</h3>
+            <div id="growSummary"></div>
+        </div>
 
-button:hover{
+        <div class="box">
+            <h3>GLOW Foods Summary</h3>
+            <div id="glowSummary"></div>
+        </div>
 
-    background:#a71d1d;
+        <div class="box">
+            <div id="duplicateSummary"></div>
+        </div>
 
-}
+        <div class="box">
+            <h3>Municipality Beneficiaries</h3>
+            <div id="municipalityList"></div>
+        </div>
 
-/* ===== PACKAGE CARD ===== */
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
 
-.package-card{
 
-    border-left:6px solid #C62828;
-    background:white;
-    border-radius:8px;
-    padding:18px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+        <script>
+            let beneficiaryPackages = [];
 
-}
+            // NEW
+            let municipalityData = {};
 
-.package-card.unique{
+            let reportData = {
+                goCount: {},
+                growCount: {},
+                glowCount: {},
+                comboCount: {},
+                comboNames: {}
+            };
 
-    border-left:6px solid #0A2F6B;
+            document.getElementById('fileInput').addEventListener('change', loadDocx);
 
-}
+            async function loadDocx(event) {
 
-.package-title{
+                const file = event.target.files[0];
 
-    color:#0A2F6B;
-    font-size:20px;
-    font-weight:bold;
-    margin-bottom:12px;
+                if (!file) return;
 
-}
+                const arrayBuffer = await file.arrayBuffer();
 
-.label{
+                mammoth.convertToHtml({
+                    arrayBuffer: arrayBuffer
+                })
+                    .then(result => {
 
-    color:#C62828;
-    font-weight:bold;
+                        const html = result.value;
 
-}
+                        parseTables(html);
 
-details{
+                    })
+                    .catch(err => {
 
-    margin-top:12px;
+                        console.error(err);
+                        alert("Unable to read DOCX file");
 
-}
+                    });
 
-summary{
+            }
 
-    cursor:pointer;
-    color:#0A2F6B;
-    font-weight:bold;
+            function parseTables(html) {
 
-}
+                const parser = new DOMParser();
 
-hr{
+                const doc = parser.parseFromString(html, "text/html");
 
-    border:none;
-    border-top:2px solid #eee;
-    margin:30px 0;
+                const tables = doc.querySelectorAll("table");
+                beneficiaryPackages = [];
 
-}
+                municipalityData = {};
 
-</style>
+                let goCount = {};
+                let growCount = {};
+                let glowCount = {};
 
-</head>
-<body>
-    <div class="header">
-    <h1>Beneficiary Food Package Counter</h1>
-    <p>Food Preference Summary and Package Generator</p>
-</div>
+                let comboCount = {};
+                let comboNames = {};
 
-<div class="container">
-    <div class="box">
-    <h3>Search Beneficiary</h3>
+                tables.forEach(table => {
 
-    <input
-        type="text"
-        id="searchName"
-        placeholder="Type beneficiary name..."
-        onkeyup="searchBeneficiary()"
-        style="
-            width:100%;
-            padding:10px;
-            font-size:16px;
-            margin-bottom:15px;
-        "
-    >
+                    let municipality = "";
 
-    <div id="searchResult"></div>
-</div>
+                    const rows = table.querySelectorAll("tr");
 
-<h2>Beneficiary Food Counter</h2>
+                    // Kunin ang unang row ng table
+                    if (rows.length > 0) {
 
-<input type="file" id="fileInput">
+                        municipality = clean(rows[0].textContent);
 
-<div class="box">
-    <h3>GO Foods Summary</h3>
-    <div id="goSummary"></div>
-</div>
+                    }
 
-<div class="box">
-    <h3>GROW Foods Summary</h3>
-    <div id="growSummary"></div>
-</div>
+                    rows.forEach((row, index) => {
 
-<div class="box">
-    <h3>GLOW Foods Summary</h3>
-    <div id="glowSummary"></div>
-</div>
+                        const cells = row.querySelectorAll("td,th");
 
-<div class="box">
-    <div id="duplicateSummary"></div>
-</div>
+                        if (cells.length < 4) return;
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+                        const col1 = clean(cells[0].textContent);
+                        const col2 = clean(cells[1].textContent);
+                        const col3 = clean(cells[2].textContent);
+                        const col4 = clean(cells[3].textContent);
 
-<script>
-    let beneficiaryPackages = [];
+                        if (
+                            col1.toUpperCase() == "NAME" ||
+                            col2.toUpperCase() == "GO"
+                        ) {
+                            return;
+                        }
 
-    let reportData = {
-    goCount:{},
-    growCount:{},
-    glowCount:{},
-    comboCount:{},
-    comboNames:{}
-};
+                        const name = municipality
+                            ? `${col1} (${municipality})`
+                            : col1;
 
-document.getElementById('fileInput').addEventListener('change', loadDocx);
+                        const go = col2;
+                        const grow = col3;
+                        const glow = col4;
 
-async function loadDocx(event){
+                        if (!name) return;
 
-    const file = event.target.files[0];
+                        if (municipality) {
 
-    if(!file) return;
+                            if (!municipalityData[municipality]) {
+                                municipalityData[municipality] = [];
+                            }
 
-    const arrayBuffer = await file.arrayBuffer();
+                            municipalityData[municipality].push({
+                                name: col1,
+                                municipality: municipality,
+                                go: go,
+                                grow: grow,
+                                glow: glow,
+                                claimed: false
+                            });
 
-    mammoth.convertToHtml({
-        arrayBuffer: arrayBuffer
-    })
-    .then(result => {
+                        }
 
-        const html = result.value;
+                        goCount[go] = (goCount[go] || 0) + 1;
+                        growCount[grow] = (growCount[grow] || 0) + 1;
+                        glowCount[glow] = (glowCount[glow] || 0) + 1;
 
-        parseTables(html);
+                        const combo = go + "||" + grow + "||" + glow;
 
-    })
-    .catch(err => {
+                        comboCount[combo] = (comboCount[combo] || 0) + 1;
 
-        console.error(err);
-        alert("Unable to read DOCX file");
+                        if (!comboNames[combo]) {
+                            comboNames[combo] = [];
+                        }
 
-    });
+                        comboNames[combo].push(name);
 
-}
+                    });
 
-function parseTables(html){
+                });
 
-    const parser = new DOMParser();
+                display(goCount, "goSummary");
+                display(growCount, "growSummary");
+                display(glowCount, "glowSummary");
 
-    const doc = parser.parseFromString(html,"text/html");
+                displayDuplicates(comboCount, comboNames);
+                restoreClaimed();
+                displayMunicipalityLists();
+                searchBeneficiary();
+            }
 
-    const tables = doc.querySelectorAll("table");
+            function clean(txt) {
 
-    let goCount = {};
-    let growCount = {};
-    let glowCount = {};
+                return txt
+                    .replace(/\s+/g, " ")
+                    .trim();
 
-    let comboCount = {};
-    let comboNames = {};
+            }
 
-    tables.forEach(table => {
+            function saveClaimed() {
 
-        let municipality = "";
+                const claimed = beneficiaryPackages
+                    .filter(x => x.claimed)
+                    .map(x => x.name);
 
-    const tableText = clean(table.textContent).toUpperCase();
+                localStorage.setItem(
+                    "claimedBeneficiaries",
+                    JSON.stringify(claimed)
+                );
 
-    if(tableText.includes("ARTECHE")){
-        municipality = "Arteche";
-    }
-    else if(tableText.includes("SAN POLICARPO")){
-        municipality = "San Policarpo";
-    }
+            }
 
-    const rows = table.querySelectorAll("tr");
+            function restoreClaimed() {
 
-    rows.forEach((row,index)=>{
+                const claimed = JSON.parse(
+                    localStorage.getItem("claimedBeneficiaries") || "[]"
+                );
 
-        const cells = row.querySelectorAll("td,th");
+                beneficiaryPackages.forEach(item => {
 
-        if(cells.length < 4) return;
+                    if (claimed.includes(item.name)) {
+                        item.claimed = true;
+                    }
 
-        const col1 = clean(cells[0].textContent);
-        const col2 = clean(cells[1].textContent);
-        const col3 = clean(cells[2].textContent);
-        const col4 = clean(cells[3].textContent);
+                });
 
-        if(
-            col1.toUpperCase()=="NAME" ||
-            col2.toUpperCase()=="GO"
-        ){
-            return;
-        }
+                Object.keys(municipalityData).forEach(muni => {
 
-        const name = municipality
-            ? `${col1} (${municipality})`
-            : col1;
+                    municipalityData[muni].forEach(item => {
 
-        const go = col2;
-        const grow = col3;
-        const glow = col4;
+                        const fullName = item.name + " (" + item.municipality + ")";
 
-        if(!name) return;
+                        if (claimed.includes(fullName)) {
+                            item.claimed = true;
+                        }
 
-        goCount[go] = (goCount[go] || 0) + 1;
-        growCount[grow] = (growCount[grow] || 0) + 1;
-        glowCount[glow] = (glowCount[glow] || 0) + 1;
+                    });
 
-        const combo = go+"||"+grow+"||"+glow;
+                });
 
-        comboCount[combo] = (comboCount[combo] || 0) + 1;
+            }
 
-        if(!comboNames[combo]){
-            comboNames[combo] = [];
-        }
+            function display(obj, id) {
 
-        comboNames[combo].push(name);
-
-    });
-
-});
-
-    display(goCount,"goSummary");
-    display(growCount,"growSummary");
-    display(glowCount,"glowSummary");
-
-    displayDuplicates(comboCount,comboNames);
-
-}
-
-function clean(txt){
-
-    return txt
-        .replace(/\s+/g," ")
-        .trim();
-
-}
-
-function display(obj,id){
-
-    let html = `
+                let html = `
     <table>
         <tr>
             <th>Item</th>
@@ -394,59 +477,60 @@ function display(obj,id){
         </tr>
     `;
 
-    Object.entries(obj)
-        .sort((a,b)=>b[1]-a[1])
-        .forEach(([item,count])=>{
+                Object.entries(obj)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([item, count]) => {
 
-            html += `
+                        html += `
             <tr>
                 <td>${item}</td>
                 <td>${count}</td>
             </tr>
             `;
 
-        });
+                    });
 
-    html += "</table>";
+                html += "</table>";
 
-    document.getElementById(id).innerHTML = html;
+                document.getElementById(id).innerHTML = html;
 
-}
+            }
 
-function displayDuplicates(comboCount, comboNames){
+            function displayDuplicates(comboCount, comboNames) {
 
-    let html = "";
+                let html = "";
 
-    // DUPLICATE ORDERS
-    html += "<h3>Duplicate Orders</h3>";
+                // DUPLICATE ORDERS
+                html += "<h3>Duplicate Orders</h3>";
 
-    let packageIndex = 0;
+                let packageIndex = 0;
 
-Object.entries(comboCount)
-    .sort((a,b)=>b[1]-a[1])
-    .forEach(([combo,count])=>{
+                Object.entries(comboCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([combo, count]) => {
 
-        if(count < 2) return;
+                        if (count < 2) return;
 
-        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
-        const parts = combo.split("||");
+                        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
+                        const parts = combo.split("||");
 
-comboNames[combo].forEach(name=>{
+                        comboNames[combo].forEach(name => {
 
-    beneficiaryPackages.push({
-        name:name,
-        package:packageName,
-        go:parts[0],
-        grow:parts[1],
-        glow:parts[2],
-        type:"Duplicate"
-    });
+                            beneficiaryPackages.push({
+                                name: name,
+                                package: packageName,
+                                go: parts[0],
+                                grow: parts[1],
+                                glow: parts[2],
+                                type: "Duplicate",
+                                claimed: false
+                            });
 
-});
+                        });
 
-packageIndex++;
+                        packageIndex++;
 
-        html += `
+                        html += `
         <div class="package-card">
             <h4 class="package-title">
             📦${packageName} (${count} Beneficiaries)
@@ -464,38 +548,39 @@ packageIndex++;
         </div>
         `;
 
-    });
+                    });
 
-    
-    // UNIQUE ORDERS
-    html += `
+
+                // UNIQUE ORDERS
+                html += `
     <hr style="margin:30px 0;">
     <h3>Beneficiaries Without Duplicate Orders</h3>
     `;
 
-    Object.entries(comboCount)
-    .sort((a,b)=>a[1]-b[1])
-    .forEach(([combo,count])=>{
+                Object.entries(comboCount)
+                    .sort((a, b) => a[1] - b[1])
+                    .forEach(([combo, count]) => {
 
-        if(count !== 1) return;
+                        if (count !== 1) return;
 
-        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
-const parts = combo.split("||");
+                        const packageName = "Package " + String.fromCharCode(65 + packageIndex);
+                        const parts = combo.split("||");
 
-beneficiaryPackages.push({
+                        beneficiaryPackages.push({
 
-    name:comboNames[combo][0],
-    package:packageName,
-    go:parts[0],
-    grow:parts[1],
-    glow:parts[2],
-    type:"Unique"
+                            name: comboNames[combo][0],
+                            package: packageName,
+                            go: parts[0],
+                            grow: parts[1],
+                            glow: parts[2],
+                            type: "Unique",
+                            claimed: false
 
-});
+                        });
 
-packageIndex++;
+                        packageIndex++;
 
-        html += `
+                        html += `
         <div class="package-card unique">
 
             <h4>📦${packageName} (${count} Beneficiar${count > 1 ? 'ies' : 'y'})</h4>
@@ -509,45 +594,45 @@ packageIndex++;
         </div>
         `;
 
-    });
+                    });
 
-    document.getElementById("duplicateSummary").innerHTML = html;
+                document.getElementById("duplicateSummary").innerHTML = html;
 
-}
+            }
 
-function searchBeneficiary(){
+            function searchBeneficiary() {
 
-    const keyword = document
-        .getElementById("searchName")
-        .value
-        .toLowerCase()
-        .trim();
+                const keyword = document
+                    .getElementById("searchName")
+                    .value
+                    .toLowerCase()
+                    .trim();
 
-    const result = document.getElementById("searchResult");
+                const result = document.getElementById("searchResult");
 
-    if(keyword==""){
+                if (keyword == "") {
 
-        result.innerHTML="";
-        return;
+                    result.innerHTML = "";
+                    return;
 
-    }
+                }
 
-    const matches = beneficiaryPackages.filter(x=>
-        x.name.toLowerCase().includes(keyword)
-    );
+                const matches = beneficiaryPackages.filter(x =>
+                    x.name.toLowerCase().includes(keyword)
+                );
 
-    if(matches.length==0){
+                if (matches.length == 0) {
 
-        result.innerHTML="<b>No beneficiary found.</b>";
-        return;
+                    result.innerHTML = "<b>No beneficiary found.</b>";
+                    return;
 
-    }
+                }
 
-    let html="";
+                let html = "";
 
-    matches.forEach(item=>{
+                matches.forEach(item => {
 
-        html += `
+                    html += `
         <div style="
             border:1px solid #2196F3;
             padding:12px;
@@ -563,18 +648,695 @@ function searchBeneficiary(){
             <b>GROW:</b> ${item.grow}<br>
             <b>GLOW:</b> ${item.glow}<br><br>
 
-            <b>Type:</b> ${item.type}
+            <b>Type:</b> ${item.type}<br><br>
+
+            ${item.claimed
+                            ?
+                            '<span style="color:green;font-weight:bold;">✅ Claimed</span>'
+                            :
+                            `<button onclick="claimBeneficiary('${item.name}')">Claim</button>`
+                        }
 
         </div>
         `;
 
-    });
+                });
 
-    result.innerHTML=html;
+                result.innerHTML = html;
+
+            }
+            function displayMunicipalityLists() {
+
+                let html = "";
+
+                Object.keys(municipalityData).forEach(muni => {
+
+                    const beneficiaries = municipalityData[muni];
+
+                    const total = beneficiaries.length;
+
+                    let claimed = 0;
+
+                    beneficiaries.forEach(b => {
+                        if (b.claimed) claimed++;
+                    });
+
+                    const unclaimed = total - claimed;
+
+                    const packageCounts = {};
+
+                    beneficiaries.forEach(b => {
+
+                        const pkg = beneficiaryPackages.find(
+                            x => x.name === b.name + " (" + muni + ")"
+                        );
+
+                        if (pkg) {
+
+                            packageCounts[pkg.package] =
+                                (packageCounts[pkg.package] || 0) + 1;
+
+                        }
+
+                    });
+
+                    html += `
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:20px;
+margin-bottom:10px;
+">
+    <h2>${muni}</h2>
+
+    <button
+        onclick="exportMunicipality('${muni}')"
+        style="
+            background:#198754;
+            color:white;
+            padding:10px 18px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        ">
+        📥 Export
+    </button>
+</div>
+`;
+
+                    html += `
+<div style="
+background:#f8f9fa;
+border:1px solid #ddd;
+padding:15px;
+border-radius:8px;
+margin-bottom:15px;
+">
+
+<h3 style="margin-bottom:10px;">📊 Overview</h3>
+
+<p><b>Total Beneficiaries:</b> ${total}</p>
+<p style="color:green;"><b>Claimed:</b> ${claimed}</p>
+<p style="color:red;"><b>Unclaimed:</b> ${unclaimed}</p>
+
+<hr style="margin:10px 0;">
+
+<h4>Package Distribution</h4>
+`;
+
+                    Object.entries(packageCounts)
+                        .sort((a, b) => a[0].localeCompare(b[0]))
+                        .forEach(([pkg, count]) => {
+
+                            html += `
+    <p><b>${pkg}</b> : ${count}</p>
+    `;
+
+                        });
+
+                    html += "</div>";
+
+                    html += `
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>GO</th>
+                <th>GROW</th>
+                <th>GLOW</th>
+                <th>Package</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+                    municipalityData[muni].forEach(item => {
+                        const beneficiary = beneficiaryPackages.find(p => p.name === item.name + " (" + muni + ")");
+                        const packageName = beneficiary ? beneficiary.package : "-";
+
+                        html += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.go}</td>
+                <td>${item.grow}</td>
+                <td>${item.glow}</td>
+                <td><b>${packageName}</b></td>
+                <td>
+                    ${item.claimed
+                                ? '<span style="color:green;font-weight:bold;">✅ Claimed</span>'
+                                : '<span style="color:red;font-weight:bold;">❌ Not Claimed</span>'
+                            }
+                </td>
+            </tr>
+            `;
+
+                    });
+
+                    html += "</table><br>";
+
+                });
+
+                document.getElementById("municipalityList").innerHTML = html;
+
+            }
+
+            function claimBeneficiary(name) {
+
+                // Update beneficiaryPackages
+                beneficiaryPackages.forEach(item => {
+
+                    if (item.name === name) {
+                        item.claimed = true;
+                    }
+
+                });
+
+                // Update municipalityData
+                Object.keys(municipalityData).forEach(muni => {
+
+                    municipalityData[muni].forEach(item => {
+
+                        const fullName = item.name + " (" + item.municipality + ")";
+
+                        if (fullName === name) {
+                            item.claimed = true;
+                        }
+
+                    });
+
+                });
+                saveClaimed();
+                // Refresh UI
+                searchBeneficiary();
+                displayMunicipalityLists();
+
+            }
+
+            // ==========================
+            // Anti Accidental Refresh
+            // ==========================
+
+            let hasLoadedData = false;
+
+            // Kapag may na-load nang DOCX
+            document.getElementById("fileInput").addEventListener("change", () => {
+                hasLoadedData = true;
+            });
+
+            // Warning kapag magre-refresh o magsasara
+            window.addEventListener("beforeunload", function (e) {
+
+                if (!hasLoadedData) return;
+
+                e.preventDefault();
+                e.returnValue = "";
+
+            });
+            function saveData() {
+
+                localStorage.setItem(
+                    "beneficiaryPackages",
+                    JSON.stringify(beneficiaryPackages)
+                );
+
+                localStorage.setItem(
+                    "municipalityData",
+                    JSON.stringify(municipalityData)
+                );
+
+            }
+
+            function loadSavedData() {
+
+                const bp = localStorage.getItem("beneficiaryPackages");
+                const md = localStorage.getItem("municipalityData");
+
+                if (bp) {
+                    beneficiaryPackages = JSON.parse(bp);
+                }
+
+                if (md) {
+                    municipalityData = JSON.parse(md);
+                }
+
+            }
+            function resetSession() {
+
+                if (!confirm("Are you sure you want to reset all claimed records?")) {
+                    return;
+                }
+                localStorage.removeItem("claimedBeneficiaries");
+                localStorage.removeItem("beneficiaryPackages");
+                localStorage.removeItem("municipalityData");
+
+                // I-reset ang claimed status sa memory
+                beneficiaryPackages.forEach(item => {
+                    item.claimed = false;
+                });
+
+                Object.keys(municipalityData).forEach(muni => {
+                    municipalityData[muni].forEach(item => {
+                        item.claimed = false;
+                    });
+                });
+
+                // Refresh UI
+                searchBeneficiary();
+                displayMunicipalityLists();
+
+                alert("Session has been reset.");
+            }
+
+            async function exportMunicipality(muni) {
+
+    const workbook = new ExcelJS.Workbook();
+
+    workbook.creator = "Beneficiary Food Counter";
+    workbook.lastModifiedBy = "Beneficiary Food Counter";
+    workbook.created = new Date();
+    workbook.modified = new Date();
+
+    const list = municipalityData[muni];
+
+    const perPage = 30;
+
+    for (let start = 0; start < list.length; start += perPage) {
+
+        const worksheet = workbook.addWorksheet(
+            "Page " + (Math.floor(start / perPage) + 1),
+            {
+                pageSetup: {
+                    paperSize: 9,
+                    orientation: "landscape",
+                    fitToPage: true,
+                    fitToWidth: 1,
+                    fitToHeight: 1,
+                    margins: {
+                        left: 0.3,
+                        right: 0.3,
+                        top: 0.5,
+                        bottom: 0.5,
+                        header: 0.2,
+                        footer: 0.2
+                    }
+                }
+            }
+        );
+
+        worksheet.columns = [
+            { width: 8 },
+            { width: 22 },
+            { width: 45 },
+            { width: 14 },
+            { width: 18 }
+        ];
+
+        worksheet.mergeCells("A1:E1");
+        worksheet.getCell("A1").value = "BENEFICIARY FOOD PACKAGE COUNTER";
+
+        worksheet.getCell("A1").font = {
+            bold: true,
+            size: 18,
+            color: { argb: "FFFFFFFF" }
+        };
+
+        worksheet.getCell("A1").alignment = {
+            horizontal: "center",
+            vertical: "middle"
+        };
+
+        worksheet.getCell("A1").fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+                argb: "FF0A2F6B"
+            }
+        };
+
+        worksheet.mergeCells("A2:E2");
+        worksheet.getCell("A2").value = "PRE-ORDER SUMMARY";
+
+        worksheet.getCell("A2").font = {
+            bold: true,
+            size: 15
+        };
+
+        worksheet.getCell("A2").alignment = {
+            horizontal: "center"
+        };
+
+        worksheet.getCell("A4").value = "Municipality:";
+        worksheet.getCell("B4").value = muni;
+
+        worksheet.getCell("D4").value = "Date:";
+        worksheet.getCell("E4").value =
+            new Date().toLocaleDateString();
+
+        worksheet.getRow(6).values = [
+            "NO.",
+            "HOUSEHOLD ID",
+            "NAME OF BENEFICIARY",
+            "PACKAGE",
+            "STATUS"
+        ];
+
+        worksheet.getRow(6).height = 25;
+
+        worksheet.getRow(6).eachCell(cell => {
+
+            cell.font = {
+                bold: true,
+                color: {
+                    argb: "FFFFFFFF"
+                }
+            };
+
+            cell.alignment = {
+                horizontal: "center",
+                vertical: "middle"
+            };
+
+            cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: {
+                    argb: "FF0A2F6B"
+                }
+            };
+
+            cell.border = {
+
+                top: { style: "thin" },
+                left: { style: "thin" },
+                right: { style: "thin" },
+                bottom: { style: "thin" }
+
+            };
+
+        });
+
+        let row = 7;
+
+        const packageTotals = {};
+
+        const end = Math.min(start + perPage, list.length);
+                // ===========================
+        // BENEFICIARY LIST
+        // ===========================
+
+        for (let i = start; i < end; i++) {
+
+            const item = list[i];
+
+            const beneficiary = beneficiaryPackages.find(
+                x => x.name === item.name + " (" + muni + ")"
+            );
+
+            let packageLetter = "-";
+
+            if (beneficiary) {
+
+                packageLetter = beneficiary.package.replace("Package ", "");
+
+                packageTotals[packageLetter] =
+                    (packageTotals[packageLetter] || 0) + 1;
+
+            }
+
+            worksheet.getCell("A" + row).value = i + 1;
+            worksheet.getCell("B" + row).value = "";
+            worksheet.getCell("C" + row).value = item.name;
+            worksheet.getCell("D" + row).value = packageLetter;
+            worksheet.getCell("E" + row).value =
+                item.claimed ? "CLAIMED" : "NOT CLAIMED";
+
+            worksheet.getRow(row).height = 22;
+
+            worksheet.getRow(row).eachCell(cell => {
+
+                cell.border = {
+                    top: { style: "thin" },
+                    left: { style: "thin" },
+                    right: { style: "thin" },
+                    bottom: { style: "thin" }
+                };
+
+                cell.alignment = {
+                    vertical: "middle",
+                    horizontal:
+                        cell.col === 3 ? "left" : "center"
+                };
+
+            });
+
+            // Alternate row color
+            if (row % 2 === 0) {
+
+                worksheet.getRow(row).eachCell(cell => {
+
+                    cell.fill = {
+                        type: "pattern",
+                        pattern: "solid",
+                        fgColor: {
+                            argb: "FFF8F9FA"
+                        }
+                    };
+
+                });
+
+            }
+
+            // Status colors
+
+            worksheet.getCell("E" + row).font = {
+
+                bold: true,
+                color: {
+                    argb:
+                        item.claimed
+                            ? "FF198754"
+                            : "FFC62828"
+                }
+
+            };
+
+            row++;
+
+        }
+
+        // Fill remaining rows para laging pantay ang page
+
+        while (row < 37) {
+
+            for (let c = 1; c <= 5; c++) {
+
+                const cell =
+                    worksheet.getCell(row, c);
+
+                cell.border = {
+
+                    top: { style: "thin" },
+                    left: { style: "thin" },
+                    right: { style: "thin" },
+                    bottom: { style: "thin" }
+
+                };
+
+            }
+
+            row++;
+
+        }
+
+        row += 2;
+
+        // ===========================
+        // PACKAGE SUMMARY
+        // ===========================
+
+        worksheet.mergeCells(
+            "A" + row + ":E" + row
+        );
+
+        worksheet.getCell("A" + row).value =
+            "PACKAGE DISTRIBUTION";
+
+        worksheet.getCell("A" + row).font = {
+
+            bold: true,
+            size: 13,
+            color: {
+                argb: "FFFFFFFF"
+            }
+
+        };
+
+        worksheet.getCell("A" + row).alignment = {
+            horizontal: "center"
+        };
+
+        worksheet.getCell("A" + row).fill = {
+
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+                argb: "FF0A2F6B"
+            }
+
+        };
+
+        row++;
+
+        Object.keys(packageTotals)
+            .sort()
+            .forEach(letter => {
+
+                worksheet.getCell("B" + row).value =
+                    "Package " + letter;
+
+                worksheet.getCell("C" + row).value =
+                    packageTotals[letter];
+
+                worksheet.getCell("B" + row).font = {
+                    bold: true
+                };
+
+                worksheet.getCell("C" + row).alignment = {
+                    horizontal: "center"
+                };
+
+                row++;
+
+            });
+
+        row++;
+
+        worksheet.getCell("B" + row).value =
+            "TOTAL BENEFICIARIES";
+
+        worksheet.getCell("C" + row).value =
+            end - start;
+
+        worksheet.getCell("B" + row).font = {
+            bold: true
+        };
+
+        worksheet.getCell("C" + row).font = {
+            bold: true
+        };
+
+        row++;
+
+                // ===========================
+        // CLAIMED / UNCLAIMED SUMMARY
+        // ===========================
+
+        const pageList = list.slice(start, end);
+
+        const claimedCount = pageList.filter(x => x.claimed).length;
+        const unclaimedCount = pageList.length - claimedCount;
+
+        worksheet.getCell("B" + row).value = "CLAIMED";
+        worksheet.getCell("C" + row).value = claimedCount;
+
+        worksheet.getCell("B" + row).font = {
+            bold: true,
+            color: { argb: "FF198754" }
+        };
+
+        worksheet.getCell("C" + row).font = {
+            bold: true,
+            color: { argb: "FF198754" }
+        };
+
+        row++;
+
+        worksheet.getCell("B" + row).value = "UNCLAIMED";
+        worksheet.getCell("C" + row).value = unclaimedCount;
+
+        worksheet.getCell("B" + row).font = {
+            bold: true,
+            color: { argb: "FFC62828" }
+        };
+
+        worksheet.getCell("C" + row).font = {
+            bold: true,
+            color: { argb: "FFC62828" }
+        };
+
+        row += 3;
+
+        // ===========================
+        // SIGNATURES
+        // ===========================
+
+        worksheet.getCell("A" + row).value = "Prepared by:";
+        worksheet.getCell("C" + row).value = "Checked by:";
+        worksheet.getCell("E" + row).value = "Approved by:";
+
+        worksheet.getRow(row).font = {
+            bold: true
+        };
+
+        row += 2;
+
+        worksheet.getCell("A" + row).value = "________________________";
+        worksheet.getCell("C" + row).value = "________________________";
+        worksheet.getCell("E" + row).value = "________________________";
+
+        worksheet.getCell("A" + row).alignment = {
+            horizontal: "center"
+        };
+
+        worksheet.getCell("C" + row).alignment = {
+            horizontal: "center"
+        };
+
+        worksheet.getCell("E" + row).alignment = {
+            horizontal: "center"
+        };
+
+        // ===========================
+        // HEADER FREEZE
+        // ===========================
+
+        worksheet.views = [
+            {
+                state: "frozen",
+                ySplit: 6
+            }
+        ];
+
+        // ===========================
+        // FOOTER
+        // ===========================
+
+        worksheet.headerFooter.oddFooter =
+            "&LBeneficiary Food Package Counter&CPage &P of &N&RGenerated " +
+            new Date().toLocaleDateString();
+
+    }
+
+    // ===========================
+    // DOWNLOAD FILE
+    // ===========================
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    saveAs(
+        new Blob(
+            [buffer],
+            {
+                type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+        ),
+        muni + "_PRE_ORDER_SUMMARY.xlsx"
+    );
 
 }
 
-</script>
- </div>
+        </script>
+    </div>
 </body>
+
 </html>
