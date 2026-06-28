@@ -2,7 +2,8 @@
 <html>
 
 <head>
-    <title>Food Preference Counter</title>
+    <title>Merchant Package SmartSystem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         * {
@@ -38,10 +39,10 @@
 
         /* ===== CONTENT ===== */
 
-        .container {
-            width: 95%;
-            max-width: 1500px;
-            margin: 30px auto;
+        .container{
+        width:min(95%,1500px);
+        margin:auto;
+        padding:20px;
         }
 
         /* ===== CARDS ===== */
@@ -87,38 +88,37 @@
 
         /* ===== TABLE ===== */
 
-        table {
-
-            width: 100%;
-            border-collapse: collapse;
-
+        .table-responsive{
+            width:100%;
+            overflow-x:auto;
+            -webkit-overflow-scrolling:touch;
         }
 
-        th {
+        table{
+            width:100%;
+            min-width:700px;
+            border-collapse:collapse;
+            background:#fff;
+        }
 
-            background: #0A2F6B;
-            color: white;
-
+        th{
+            background:#0A2F6B;
+            color:#fff;
         }
 
         th,
-        td {
-
-            padding: 12px;
-            border: 1px solid #ddd;
-
+        td{
+            padding:12px;
+            border:1px solid #ddd;
+            text-align:left;
         }
 
-        tr:nth-child(even) {
-
-            background: #fafafa;
-
+        tr:nth-child(even){
+            background:#fafafa;
         }
 
-        tr:hover {
-
-            background: #f3f7ff;
-
+        tr:hover{
+            background:#f3f7ff;
         }
 
         /* ===== BUTTON ===== */
@@ -204,7 +204,7 @@
 
 <body>
     <div class="header">
-        <h1>Beneficiary Food Package Counter</h1>
+        <h1>Merchant Package SmartSystem</h1>
         <p>Food Preference Summary and Package Generator</p>
     </div>
 
@@ -470,12 +470,13 @@
             function display(obj, id) {
 
                 let html = `
-    <table>
-        <tr>
-            <th>Item</th>
-            <th>Count</th>
-        </tr>
-    `;
+                <div class="table-responsive">
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <th>Count</th>
+                    </tr>
+            `;
 
                 Object.entries(obj)
                     .sort((a, b) => b[1] - a[1])
@@ -758,6 +759,7 @@ margin-bottom:15px;
                     html += "</div>";
 
                     html += `
+                    <div class="table-responsive">
         <table>
             <tr>
                 <th>Name</th>
